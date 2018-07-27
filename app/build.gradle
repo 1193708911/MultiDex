@@ -1,0 +1,95 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.example.administrator.myapplication"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"]//添加一个默认渠道号
+        flavorDimensions "versionCode"
+
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("index.jks")
+            storePassword "111111"
+            keyAlias "key"
+            keyPassword "111111"
+        }
+        release {
+            storeFile file("index.jks")
+            storePassword "111111"
+            keyAlias "key"
+            keyPassword "111111"
+        }
+    }
+
+    productFlavors {
+        umeng {
+            // manifestPlaceholders=[UMENG_CHANNEL_VALUE: "umeng"]
+        }
+        xiaomi {
+            //  manifestPlaceholders=[UMENG_CHANNEL_VALUE: "xiaomi"]
+        }
+        yingyongbao {
+            //  manifestPlaceholders=[UMENG_CHANNEL_VALUE: "xiaomi"]
+        }
+        huawei {
+            //  manifestPlaceholders=[UMENG_CHANNEL_VALUE: "xiaomi"]
+        }
+
+        '360' {
+            //  manifestPlaceholders=[UMENG_CHANNEL_VALUE: "xiaomi"]
+        }
+
+
+    }
+    productFlavors.all {
+        flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
+
+            //这里zhidng指定我们要打包的名称
+            applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "${variant.productFlavors[0].name}" + ".apk"
+
+                }
+
+
+            }
+        }
+
+    }
+
+
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.umeng.analytics:analytics:latest.integration'
+
+}
